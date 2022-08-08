@@ -2,7 +2,7 @@
 	"name": "42",
 	"version": "1.0.0",
 	"description": "",
-	"main": "dist/main.js",
+	"main": "dist/test.js",
 	"scripts": {
 		"test": "tsc && node .",
 		"start": "node .",

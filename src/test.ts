@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { Client, User } from "./index";
+import { Client } from "./index";
 
 (async () => {
 	const client = new Client(
@@ -8,5 +8,8 @@ import { Client, User } from "./index";
 	);
 
 	const user = await client.users.get("shocquen");
-	console.log(user?.displayname);
+	const events = await user?.events;
+	if (events) {
+		console.log(events[1]);
+	}
 })();
