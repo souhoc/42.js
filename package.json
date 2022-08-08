@@ -1,0 +1,21 @@
+{
+	"name": "42",
+	"version": "1.0.0",
+	"description": "",
+	"main": "dist/main.js",
+	"scripts": {
+		"test": "tsc && node .",
+		"start": "node .",
+		"build": "tsc"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@types/axios": "^0.14.0",
+		"@types/node": "^18.6.3",
+		"axios": "^0.27.2",
+		"bottleneck": "^2.19.5",
+		"dotenv": "^16.0.1"
+	}
+}
