@@ -1,4 +1,6 @@
-# `42api.js`
+# `42.js`
+
+Library for 42 school API. In progress...
 
 _Author: [shocquen](https://github.com/shocquen)_
 
@@ -9,7 +11,7 @@ _Author: [shocquen](https://github.com/shocquen)_
 ## Installation
 
 ```bash
-npm install 42api
+npm install 42.js
 ```
 
 ## Usage
@@ -18,7 +20,22 @@ npm install 42api
 import "dotenv/config";
 import { Client } from "42api";
 
-const client = new Client(process.env.CLIENT_ID, client.env.CLIENT_SECRET);
+(async () => {
+	const client = new Client(
+		<string>process.env.CLIENT_ID,
+		<string>client.env.CLIENT_SECRET
+	);
+
+	try {
+		if (process.argv.length != 3) throw "Bad arguments!";
+		const login = process.argv[2];
+
+		const user = await client.users.get(login);
+		console.log(user?.displayname);
+	} catch (err) {
+		console.error(err);
+	}
+})();
 ```
 
 # Contributing
