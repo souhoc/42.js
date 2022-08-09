@@ -13,7 +13,8 @@ const limiter = new Bottleneck({
 export class Client {
 	private _id: string;
 	private _secret: string;
-	private _token: null | string = null;
+	private _token: null | string =
+		"b1dc8dd9d318b4822cf049017daa1c511638601a5bc0aad6e2af327d5ea29422";
 	static uri: string = "https://api.intra.42.fr/v2/";
 
 	users = new UserManager(this);
@@ -43,9 +44,14 @@ export class Client {
 
 		try {
 			const res = await axios.request(reqOptions);
+			console.log("New token!");
 			return <string>res.data.access_token;
-		} catch (err) {
-			console.error(err);
+		} catch (err: any) {
+			console.error(
+				err.response.status,
+				err.response.statusText,
+				err.response.data
+			);
 		}
 		return null;
 	}
@@ -64,9 +70,12 @@ export class Client {
 				);
 				return res;
 			} catch (err: any) {
-				console.error(err.response.statusText, err.response.config.url);
+				console.error(
+					err.response.status,
+					err.response.statusText,
+					err.response.data
+				);
 				this._token = await this._getToken();
-				console.log("New token generated!");
 			}
 		}
 		return null;
