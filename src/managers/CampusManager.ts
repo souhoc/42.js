@@ -7,9 +7,8 @@ export class CampusManager extends BaseManager {
 		super(client);
 	}
 
-	async get(campus_id: number): Promise<ICampus | null> {
+	async get(campus_id: number): Promise<Campus | null> {
 		const res = await this.client.get("campus/ " + campus_id);
-		if (res === null) return null;
 		return new Campus(res?.data);
 	}
 }
