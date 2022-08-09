@@ -1,5 +1,6 @@
 import { BaseManager } from "../managers/BaseManager";
 import { Client } from "./client";
+import { ICursusUsers } from "./cursus_users";
 
 export interface IUser {
 	id: number;
@@ -26,7 +27,7 @@ export interface IUser {
 	alumnized_at: Date | null;
 	"alumni?": boolean;
 	groups: object[];
-	cursus_users: Object[];
+	cursus_users: ICursusUsers[];
 	projects_users: object[];
 	languages_users: object[];
 	achievements: object[];
@@ -66,7 +67,7 @@ export class User extends BaseManager {
 	alumnized_at: Date | null;
 	"alumni?": boolean;
 	groups: object[];
-	cursus_users: Object[];
+	cursus_users: ICursusUsers[];
 	projects_users: object[];
 	languages_users: object[];
 	achievements: object[];

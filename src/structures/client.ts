@@ -4,6 +4,7 @@ import Bottleneck from "bottleneck";
 import { UserManager } from "../managers/UserManager";
 import { CampusManager } from "../managers/CampusManager";
 import { Loader } from "../utils/loader";
+import { CursusManager } from "../managers/CursusManager";
 
 const limiter = new Bottleneck({
 	maxConcurrent: 2,
@@ -18,6 +19,7 @@ export class Client {
 
 	users = new UserManager(this);
 	campus = new CampusManager(this);
+	cursus = new CursusManager(this);
 
 	constructor(id: string, secret: string) {
 		this._id = id;
