@@ -6,6 +6,7 @@ import { CampusManager } from "../managers/CampusManager";
 import { EventManager } from "../managers/EventManager";
 import { Loader } from "../utils/loader";
 import { EventUserManager } from "../managers/EventUserManager";
+import { CursusManager } from "../managers/CursusManager";
 
 const limiter = new Bottleneck({
 	maxConcurrent: 2,
@@ -22,6 +23,7 @@ export class Client {
 	campus = new CampusManager(this);
 	events = new EventManager(this);
 	events_users = new EventUserManager(this);
+	cursus = new CursusManager(this);
 
 	constructor(id: string, secret: string) {
 		this._id = id;
