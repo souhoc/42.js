@@ -3,7 +3,9 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import Bottleneck from "bottleneck";
 import { UserManager } from "../managers/UserManager";
 import { CampusManager } from "../managers/CampusManager";
+import { EventManager } from "../managers/EventManager";
 import { Loader } from "../utils/loader";
+import { EventUserManager } from "../managers/EventUserManager";
 
 const limiter = new Bottleneck({
 	maxConcurrent: 2,
@@ -18,6 +20,8 @@ export class Client {
 
 	users = new UserManager(this);
 	campus = new CampusManager(this);
+	events = new EventManager(this);
+	events_users = new EventUserManager(this);
 
 	constructor(id: string, secret: string) {
 		this._id = id;
