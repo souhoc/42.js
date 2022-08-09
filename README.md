@@ -18,7 +18,7 @@ npm install 42.js
 
 ```ts
 import "dotenv/config";
-import { Client } from "42api";
+import { Client } from "42.js";
 
 (async () => {
 	const client = new Client(
