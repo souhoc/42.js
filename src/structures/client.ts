@@ -13,8 +13,7 @@ const limiter = new Bottleneck({
 export class Client {
 	private _id: string;
 	private _secret: string;
-	private _token: null | string =
-		"b1dc8dd9d318b4822cf049017daa1c511638601a5bc0aad6e2af327d5ea29422";
+	private _token: null | string = null;
 	static uri: string = "https://api.intra.42.fr/v2/";
 
 	users = new UserManager(this);
