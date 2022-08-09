@@ -52,7 +52,7 @@ export class Client {
 
 	async get(path: string): Promise<AxiosResponse<any, any> | null> {
 		if (this._token === null) this._token = await this._getToken();
-		for (let stop = 2; stop; stop--) {
+		for (let stop = 2; stop !== 0; stop--) {
 			const config = {
 				headers: {
 					Authorization: "Bearer " + this._token,
@@ -65,7 +65,6 @@ export class Client {
 				return res;
 			} catch (err: any) {
 				console.error(err.response.statusText, err.response.config.url);
-				if (err.response.statusText !== "Too Many Requests") return null;
 				this._token = await this._getToken();
 				console.log("New token generated!");
 			}
