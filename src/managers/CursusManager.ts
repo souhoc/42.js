@@ -15,7 +15,7 @@ export class CursusManager extends BaseManager {
 	async fetch(options?: {
 		limit?: number;
 		params: string[];
-	}): Promise<ICursus[]> {
+	}): Promise<Cursus[]> {
 		const res = await this.client.fetch(
 			"cursus/?" + options?.params.join("&"),
 			options?.limit
