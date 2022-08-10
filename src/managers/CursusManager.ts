@@ -24,13 +24,24 @@ export class CursusManager extends BaseManager {
 	}
 
 	/**
-	 * Look for one cursus
+	 * Look for one cursus by slug
 	 * @param  {string} slug
 	 * @returns Promise
 	 */
-	async get(slug: string): Promise<Cursus | null> {
+	async get_by_slug(slug: string): Promise<Cursus | null> {
 		const res = await this.client.get("cursus/?filter[slug]=" + slug);
 		if (res === null) return null;
 		return new Cursus(this.client, res?.data[0]);
+	}
+
+	/**
+	 * Look for one cursus by id
+	 * @param  {number} id
+	 * @returns Promise
+	 */
+	 async get_by_id(id: number): Promise<Cursus | null> {
+		const res = await this.client.get("cursus/" + id);
+		if (res === null) return null;
+		return new Cursus(this.client, res?.data);
 	}
 }
