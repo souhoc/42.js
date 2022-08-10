@@ -1,8 +1,8 @@
 import { BaseManager } from "./BaseManager";
 import { Client } from "../structures/client";
-import { EventUser } from "../structures/events_user";
+import { EventUser } from "../structures/events_users";
 
-export class EventUserManager extends BaseManager {
+export class EventsUsersManager extends BaseManager {
 	constructor(client: Client) {
 		super(client);
 	}

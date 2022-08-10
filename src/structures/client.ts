@@ -1,11 +1,11 @@
 import querystring from "node:querystring";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import Bottleneck from "bottleneck";
-import { UserManager } from "../managers/UserManager";
+import { UsersManager } from "../managers/UsersManager";
 import { CampusManager } from "../managers/CampusManager";
-import { EventManager } from "../managers/EventManager";
+import { EventsManager } from "../managers/EventsManager";
 import { Loader } from "../utils/loader";
-import { EventUserManager } from "../managers/EventUserManager";
+import { EventsUsersManager } from "../managers/EventsUsersManager";
 import { CursusManager } from "../managers/CursusManager";
 
 const limiter = new Bottleneck({
@@ -19,10 +19,10 @@ export class Client {
 	private _token: null | string = null;
 	static uri: string = "https://api.intra.42.fr/v2/";
 
-	users = new UserManager(this);
+	users = new UsersManager(this);
 	campus = new CampusManager(this);
-	events = new EventManager(this);
-	events_users = new EventUserManager(this);
+	events = new EventsManager(this);
+	events_users = new EventsUsersManager(this);
 	cursus = new CursusManager(this);
 
 	constructor(id: string, secret: string) {
