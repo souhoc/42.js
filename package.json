@@ -1,6 +1,6 @@
 {
 	"name": "42.js",
-	"version": "1.1.7",
+	"version": "1.1.8",
 	"description": "Library for 42 school API in js (ts)",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -9,7 +9,8 @@
 	],
 	"scripts": {
 		"build": "tsc",
-		"test": "tsc && node ./dist/test.js"
+		"test": "tsc && node ./dist/test.js",
+		"publish": "tsc && npm publish"
 	},
 	"keywords": [
 		"API",
