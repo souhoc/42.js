@@ -127,4 +127,11 @@ export class User extends BaseManager {
 			.catch(console.error);
 		return ret;
 	}
+
+	get projects(): Promise<void | object[]> {
+		const ret = this.client
+			.fetch("users/" + this.id + "/projects_users?")
+			.catch(console.error);
+		return ret;
+	}
 }
