@@ -17,7 +17,7 @@ export class ProjectsUsers extends BaseManager {
     occurence: number;
     final_mark: number | null;
     status: string;
-    project: Object;
+    project: IProject;
     cursus_ids: number[];
     teams: Object[];
 
