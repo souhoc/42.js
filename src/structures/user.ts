@@ -1,6 +1,7 @@
 import { BaseManager } from "../managers/BaseManager";
 import { Client } from "./client";
 import { ICursusUsers } from "./cursus_users";
+import { IProjectsUsers, ProjectsUsers } from "./projects_users";
 
 export interface IUser {
 	id: number;
@@ -124,6 +125,13 @@ export class User extends BaseManager {
 	get events(): Promise<void | object[]> {
 		const ret = this.client
 			.fetch("users/" + this.id + "/events?")
+			.catch(console.error);
+		return ret;
+	}
+
+	get projects(): Promise<void | object[]> {
+		const ret = this.client
+			.fetch("users/" + this.id + "/projects_users?")
 			.catch(console.error);
 		return ret;
 	}
