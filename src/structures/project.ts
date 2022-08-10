@@ -1,6 +1,4 @@
-import { BaseManager } from "../managers/BaseManager";
 import { ICampus } from "./campus";
-import { Client } from "./client";
 import { ICursus } from "./cursus";
 
 export interface IProject {
