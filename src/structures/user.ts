@@ -1,7 +1,6 @@
 import { BaseManager } from "../managers/BaseManager";
 import { Client } from "./client";
 import { ICursusUsers } from "./cursus_users";
-import { IProjectsUsers, ProjectsUsers } from "./projects_users";
 
 export interface IUser {
 	id: number;
