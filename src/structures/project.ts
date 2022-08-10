@@ -1,4 +1,6 @@
+import { BaseManager } from "../managers/BaseManager";
 import { ICampus } from "./campus";
+import { Client } from "./client";
 import { ICursus } from "./cursus";
 
 export interface IProject {
@@ -21,7 +23,7 @@ export interface IProject {
     project_sessions: Object[]
 }
 
-export class Project implements IProject {
+export class Project{
 	id: number;
     name: string;
     slug: string;
