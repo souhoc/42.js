@@ -2,7 +2,7 @@ import { BaseManager } from "./BaseManager";
 import { Client } from "../structures/client";
 import { User, IUser } from "../structures/user";
 
-export class UserManager extends BaseManager {
+export class UsersManager extends BaseManager {
 	constructor(client: Client) {
 		super(client);
 	}

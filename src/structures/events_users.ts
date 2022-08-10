@@ -1,5 +1,5 @@
 import { User } from "./user";
-import { Event } from "./event";
+import { Event } from "./events";
 
 export interface IEventUser {
 	id: number;
@@ -7,7 +7,7 @@ export interface IEventUser {
 	event: Event;
 }
 
-export class EventUser implements IEventUser {
+export class EventsUsers implements IEventUser {
 	id: number;
 	user: User;
 	event: Event;
