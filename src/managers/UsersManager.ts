@@ -12,10 +12,7 @@ export class UsersManager extends BaseManager {
 	 * @param  {{limit?:number;params:string[]}} options?
 	 * @returns Promise
 	 */
-	async fetch(options?: {
-		limit?: number;
-		params: string[];
-	}): Promise<IUser[]> {
+	async fetch(options?: { limit?: number; params: string[] }): Promise<User[]> {
 		const res = await this.client.fetch(
 			"users/?" + options?.params.join("&"),
 			options?.limit
