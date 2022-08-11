@@ -1,6 +1,7 @@
 import { BaseManager } from "../managers/BaseManager";
 import { Client } from "./client";
 import { ICursusUsers } from "./cursus_users";
+import { IScaleTeam, ScaleTeam } from "./scale_teams";
 
 export interface IUser {
 	id: number;
@@ -134,4 +135,25 @@ export class User extends BaseManager {
 			.catch(console.error);
 		return ret;
 	}
+
+	/**
+	 * Look for an array of scale teams that the user is in
+	 * @param  {{limit?:number;params:string[]}} options basic fetch options
+	 * @param  {number} type 0 for all, 1 for "as corrector", 2 for "as corrected"
+	 * @returns Promise
+	 */
+	async scale_teams(options?: {
+		limit?: number;
+		params: string[];
+	}, type: number = 0): Promise<ScaleTeam[]> {
+		let url = "/users/" + this.id + "/scale_teams";
+		if(type === 1)
+			url += "/as_corrector";
+		if(type === 2)
+			url += "/as_corrected";
+		url += "?" + options?.params.join("&");
+		const res = await this.client.fetch(url, options?.limit);
+		return res.map((o) => new ScaleTeam(<IScaleTeam>o));
+	}
+
 }
