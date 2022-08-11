@@ -10,7 +10,6 @@
 	"scripts": {
 		"build": "tsc",
 		"test": "tsc && node ./dist/test.js",
-		"publish": "tsc && npm publish"
 	},
 	"keywords": [
 		"API",
