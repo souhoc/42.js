@@ -1,5 +1,5 @@
 import { IProject } from "./project";
-import { ITeams } from "./teams";
+import { ITeam } from "./teams";
 
 export interface IProjectsUsers {
     id: number,
@@ -8,5 +8,5 @@ export interface IProjectsUsers {
     status: string,
     project: IProject,
     cursus_ids: number[],
-    teams: ITeams[]
+    teams: ITeam[]
 }

@@ -8,6 +8,7 @@ import { Loader } from "../utils/loader";
 import { EventsUsersManager } from "../managers/EventsUsersManager";
 import { CursusManager } from "../managers/CursusManager";
 import { ProjectManager } from "../managers/ProjectManager";
+import { ScaleTeamsManager } from "../managers/ScaleTeamsManager";
 
 const limiter = new Bottleneck({
 	maxConcurrent: 2,
@@ -26,6 +27,7 @@ export class Client {
 	events_users = new EventsUsersManager(this);
 	cursus = new CursusManager(this);
 	projects = new ProjectManager(this);
+	scale_teams = new ScaleTeamsManager(this);
 
 	constructor(id: string, secret: string) {
 		this._id = id;
