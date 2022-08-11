@@ -21,12 +21,12 @@ export class ScaleTeamsManager extends BaseManager {
 	}
 
 	/**
-	 * Look for one scal team
-	 * @param  {string} login
+	 * Look for one scale team
+	 * @param  {string} id
 	 * @returns Promise
 	 */
-	async get(login: string): Promise<ScaleTeam | null> {
-		const res = await this.client.get("scale_teams/" + login);
+	async get(id: number): Promise<ScaleTeam | null> {
+		const res = await this.client.get("scale_teams/" + id);
 		if (res === null) return null;
 		return new ScaleTeam(res?.data);
 	}
