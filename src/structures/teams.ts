@@ -1,6 +1,6 @@
 import { User } from "./user";
 
-export interface ITeams {
+export interface ITeam {
     id: number,
     name: string,
     url: string,
