@@ -9,7 +9,7 @@ export class EventsManager extends BaseManager {
 
 	async get(target: number): Promise<Event | null> {
 		const res = await this.client.get("events/" + target);
-		return new Event(res?.data);
+		return new Event(this.client, res?.data);
 	}
 
 	async fetch(options?: {
@@ -20,6 +20,6 @@ export class EventsManager extends BaseManager {
 			"events/?" + options?.params?.join("&"),
 			options?.limit
 		);
-		return res.map((e) => new Event(<IEvent>e));
+		return res.map((e) => new Event(this.client, <IEvent>e));
 	}
 }
