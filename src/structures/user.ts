@@ -122,14 +122,14 @@ export class User extends BaseManager {
 		this.campus_users = data.campus_users;
 	}
 
-	get events(): Promise<void | object[]> {
+	async fetchEvents(): Promise<void | object[]> {
 		const ret = this.client
 			.fetch("users/" + this.id + "/events?")
 			.catch(console.error);
 		return ret;
 	}
 
-	get projects(): Promise<void | object[]> {
+	async fetchProjects(): Promise<void | object[]> {
 		const ret = this.client
 			.fetch("users/" + this.id + "/projects_users?")
 			.catch(console.error);
@@ -142,18 +142,18 @@ export class User extends BaseManager {
 	 * @param  {number} type 0 for all, 1 for "as corrector", 2 for "as corrected"
 	 * @returns Promise
 	 */
-	async scale_teams(options?: {
-		limit?: number;
-		params: string[];
-	}, type: number = 0): Promise<ScaleTeam[]> {
+	async fetchScale_teams(
+		options?: {
+			limit?: number;
+			params?: string[];
+		},
+		type: number = 0
+	): Promise<ScaleTeam[]> {
 		let url = "/users/" + this.id + "/scale_teams";
-		if(type === 1)
-			url += "/as_corrector";
-		if(type === 2)
-			url += "/as_corrected";
-		url += "?" + options?.params.join("&");
+		if (type === 1) url += "/as_corrector";
+		if (type === 2) url += "/as_corrected";
+		url += "?" + options?.params?.join("&");
 		const res = await this.client.fetch(url, options?.limit);
 		return res.map((o) => new ScaleTeam(<IScaleTeam>o));
 	}
-
 }

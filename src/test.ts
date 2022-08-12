@@ -5,5 +5,10 @@ import { Client } from "./index";
 	const client = new Client(<string>process.env.ID, <string>process.env.SECRET);
 
 	const user = await client.users.get("shocquen");
-	console.log(user);
+	const events = await user?.fetchEvents();
+	console.log(user?.displayname);
+	const scale_teams = await user?.fetchScale_teams({ limit: 5 });
+	console.log(scale_teams);
+	const projects_users = await user?.fetchProjects();
+	console.log(projects_users);
 })();
