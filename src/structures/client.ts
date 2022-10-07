@@ -131,9 +131,14 @@ export class Client {
 			redirect_uri: callback_url,
 			response_type: "code",
 		};
-		const url =  Client.uri + "/oauth/authorize?" + querystring.stringify(params);
-		const auth_process = new AuthProcess(url, this._secret, port);
+		const url =  Client.uri + "oauth/authorize?" + querystring.stringify(params);
+		const auth_process = new AuthProcess(callback_url, url, port);
 		this._auth_processes.push(auth_process);
 		return auth_process;
+	}
+
+	async response_auth_process(process_id: number, code: string) {
+		const process = this._auth_processes.find((p) => p.id === process_id);
+		if (process === undefined) throw "Invalid process id";
 	}
 }
