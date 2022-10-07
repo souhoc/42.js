@@ -9,6 +9,7 @@ import { EventsUsersManager } from "../managers/EventsUsersManager";
 import { CursusManager } from "../managers/CursusManager";
 import { ProjectManager } from "../managers/ProjectManager";
 import { ScaleTeamsManager } from "../managers/ScaleTeamsManager";
+import { AuthProcess } from "../auth/auth_manager";
 
 const limiter = new Bottleneck({
 	maxConcurrent: 2,
@@ -19,6 +20,7 @@ export class Client {
 	private _id: string;
 	private _secret: string;
 	private _token: null | string = null;
+	private _auth_processes: AuthProcess[] = [];
 	static uri: string = "https://api.intra.42.fr/v2/";
 
 	users = new UsersManager(this);
@@ -115,5 +117,23 @@ export class Client {
 		}
 		bar.end();
 		return pages;
+	}
+
+	/**
+	 * Start an auth process to let user connect via 42 account
+	 * @param  {string} callback_url URL where the callback will be sent
+	 * @param  {number} port If set, the server will be started on this port
+	 * @returns The AuthProcess object associated
+	 */
+	init_auth_process(callback_url: string, port?: number): AuthProcess {
+		const params = {
+			client_id: this._id,
+			redirect_uri: callback_url,
+			response_type: "code",
+		};
+		const url =  Client.uri + "/oauth/authorize?" + querystring.stringify(params);
+		const auth_process = new AuthProcess(url, this._secret, port);
+		this._auth_processes.push(auth_process);
+		return auth_process;
 	}
 }
