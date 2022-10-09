@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { Client } from "./client";
+import { CorrectionSlot } from "./correction_slot";
 import { IUser, User } from "./user";
 
 export class LoggedUser extends User{
@@ -50,7 +51,14 @@ export class LoggedUser extends User{
         return this.client.fetch(path, limit, await this._getToken() || "");
     }
 
-    async get_personnal_correction_slots(): Promise<any> {
-        return await this.fetch("/me/slots?filter[future]");
+    async get_corrector_slots(): Promise<CorrectionSlot[]> {
+        const res = await this.fetch("/me/slots?filter[future]=true");
+        const objs: CorrectionSlot[] = res.map((slot: any) => new CorrectionSlot(slot));
+        return objs.filter((slot) => slot.user && slot.user.id == this.id);
+    }
+    async get_corrected_slots(): Promise<CorrectionSlot[]> {
+        const res = await this.fetch("/me/slots?filter[future]=true");
+        const objs: CorrectionSlot[] = res.map((slot: any) => new CorrectionSlot(slot));
+        return objs.filter((slot) => !slot.user || slot.user.id != this.id);
     }
 }
