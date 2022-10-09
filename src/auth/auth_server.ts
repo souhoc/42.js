@@ -28,11 +28,9 @@ export function create_app(server: {port: number, redirect_url?: string, callbac
                     if(server.redirect_url)
                         res.redirect(server.redirect_url + "?status=success");
                     else
-                    {
-                        if(server.callback_function)
-                            server.callback_function(logged_user);
                         res.status(200).send("Successfully logged in");
-                    }
+                    if(server.callback_function)
+                        server.callback_function(logged_user);
                 }
                 else
                 {
