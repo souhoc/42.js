@@ -120,6 +120,34 @@ export class Client {
 		return pages;
 	}
 
+	async post(path: string, body: any): Promise<AxiosResponse<any, any> | null> {
+		if (this._token === null) this._token = await this._getToken();
+		for (let stop = 2; stop !== 0; stop--) {
+			const headers = {
+				Authorization: "Bearer " + this._token,
+			};
+			const data = querystring.stringify(body);
+			const reqOptions = {
+				url: Client.uri + path,
+				method: "POST",
+				headers: headers,
+				data: data,
+			};
+	
+			try {
+				const ret = await axios.request(reqOptions);
+				return ret.data;
+			} catch (err: any) {
+				console.error(
+					err.response.status,
+					err.response.statusText,
+					err.response.data
+				);
+			}
+		}
+		return null;
+	}
+
 	get auth_manager(): AuthManager {
 		return this._auth_manager;
 	}

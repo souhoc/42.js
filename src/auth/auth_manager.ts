@@ -69,6 +69,14 @@ export class AuthManager {
 	async response_auth_process(process_id: number, code: string) {
 		const process = this._auth_processes.find((p) => p.id === process_id);
 		if (process === undefined) throw "Invalid process id";
-        console.log("Received code: " + code);
+        const params = {
+            grant_type: "authorization_code",
+            client_id: this._id,
+            client_secret: this._secret,
+            code: code,
+            redirect_uri: process.callback_url,
+        }
+        const response = await this._client.post("oauth/token", params);
+        console.log(response);
 	}
 }
