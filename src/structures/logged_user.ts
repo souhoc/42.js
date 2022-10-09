@@ -17,14 +17,9 @@ export class LoggedUser extends User{
     }
 
     private async _getToken() {
-        const config = {
-            headers: {
-                Authorization: "Bearer " + this._token,
-            },
-        };
         try {
-            const ret = await axios.get(Client.uri + "/oauth/token/info", config)
-            if(ret.data.expires_in_seconds < 10)
+            const ret = await this.client.get("/oauth/token/info", this._token);
+            if(ret?.data.expires_in_seconds < 10)
             {
                 const params = {
                     grant_type: "refresh_token",
@@ -53,5 +48,9 @@ export class LoggedUser extends User{
     
     async fetch(path: string, limit: number = 0): Promise<Object[]> {
         return this.client.fetch(path, limit, await this._getToken() || "");
+    }
+
+    async get_personnal_correction_slots(): Promise<any> {
+        return await this.fetch("/me/slots?filter[future]");
     }
 }
