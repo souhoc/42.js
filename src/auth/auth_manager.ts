@@ -80,14 +80,9 @@ export class AuthManager {
             redirect_uri: process.callback_url,
         }
         const response: any = await this._client.post("oauth/token", params);
-        const config = {
-            headers: {
-                Authorization: "Bearer " + response?.access_token,
-            },
-        };
         try {
-            const ret = await axios.get(Client.uri + "/me", config)
-            const logged_user = new LoggedUser(this._client, ret.data, response?.refresh_token, response?.access_token);
+            const ret = await this._client.get("/me", response?.access_token);
+            const logged_user = new LoggedUser(this._client, ret?.data, response?.refresh_token, response?.access_token, this._id, this._secret);
             this._logged_users.push(logged_user);
             console.log(`User ${logged_user.login} finished auth process`);
             return logged_user;

@@ -66,14 +66,14 @@ export class Client {
 			);
 		}
 		return null;
-	}
+	}		
 
-	async get(path: string): Promise<AxiosResponse<any, any> | null> {
-		if (this._token === null) this._token = await this._getToken();
+	async get(path: string, token?: string): Promise<AxiosResponse<any, any> | null> {
+		if (!token && this._token === null) this._token = await this._getToken();
 		for (let stop = 2; stop !== 0; stop--) {
 			const config = {
 				headers: {
-					Authorization: "Bearer " + this._token,
+					Authorization: "Bearer " + token || this._token || "",
 				},
 			};
 			try {
@@ -82,6 +82,8 @@ export class Client {
 				);
 				return res;
 			} catch (err: any) {
+				if(token)
+					throw(err)
 				console.error(
 					err.response.status,
 					err.response.statusText,
@@ -93,7 +95,7 @@ export class Client {
 		return null;
 	}
 
-	async fetch(path: string, limit: number = 0): Promise<Object[]> {
+	async fetch(path: string, limit: number = 0, token?: string): Promise<Object[]> {
 		const pages: Object[] | null = [];
 		let page: Object[] = [];
 		let res: AxiosResponse<any, any> | null;
@@ -103,7 +105,7 @@ export class Client {
 		try {
 			for (let i = 1; page?.length || i === 1; i++) {
 				pages.push(...page);
-				res = await this.get(path + `&page[size]=${size}&page[number]=` + i);
+				res = await this.get(path + `&page[size]=${size}&page[number]=` + i, token);
 				if (res === null) throw "Error in Client.fetch";
 				page = res.data;
 				const total: number = limit || Number(res.headers["x-total"]);
