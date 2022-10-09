@@ -56,7 +56,7 @@ export class Client {
 
 		try {
 			const res = await axios.request(reqOptions);
-			console.log("New token!");
+			console.log("New token generated for the client!");
 			return <string>res.data.access_token;
 		} catch (err: any) {
 			console.error(

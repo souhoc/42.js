@@ -1,7 +1,8 @@
 import express from 'express';
+import { LoggedUser } from '../structures/logged_user';
 import { AuthManager } from './auth_manager';
 
-export function create_app(server: {port: number, redirect_url?: string}, auth_manager: AuthManager, auth_process_id: number): any {
+export function create_app(server: {port: number, redirect_url?: string, callback_function?: (arg0: LoggedUser) => void}, auth_manager: AuthManager, auth_process_id: number): any {
     const app = express();
     app.use((req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");
@@ -10,7 +11,7 @@ export function create_app(server: {port: number, redirect_url?: string}, auth_m
     });
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
-    app.get('/callback', (req, res) => {
+    app.get('/callback', async (req, res) => {
         if(req.query.error) {
             if(server.redirect_url)
                 res.redirect(server.redirect_url + "?status=error&error=" + req.query.error + "&error_description=" + req.query.error_description);
@@ -21,11 +22,25 @@ export function create_app(server: {port: number, redirect_url?: string}, auth_m
         {
             if(req.query.code)
             {
-                auth_manager.response_auth_process(auth_process_id, req.query.code as string);
-                if(server.redirect_url)
-                    res.redirect(server.redirect_url + "?status=success");
+                const logged_user = await auth_manager.response_auth_process(auth_process_id, req.query.code as string);
+                if(logged_user)
+                {
+                    if(server.redirect_url)
+                        res.redirect(server.redirect_url + "?status=success");
+                    else
+                    {
+                        if(server.callback_function)
+                            server.callback_function(logged_user);
+                        res.status(200).send("Successfully logged in");
+                    }
+                }
                 else
-                    res.status(200).send("Successfully logged in");
+                {
+                    if(server.redirect_url)
+                        res.redirect(server.redirect_url + "?status=error&error=no-code" + "&error_description=There+was+an+error+while+logging+in");
+                    else
+                        res.status(500).send("Unable to log: There was an error while logging in");
+                }
             }
             else
             {

@@ -1,6 +1,8 @@
 import { Client } from "../structures/client";
 import querystring from "node:querystring";
 import { create_app } from "./auth_server";
+import axios from "axios";
+import { LoggedUser } from "../structures/logged_user";
 
 export class AuthProcess {
     id: number;
@@ -17,6 +19,7 @@ export class AuthProcess {
 
 export class AuthManager {
     private _auth_processes: AuthProcess[] = [];
+    private _logged_users: LoggedUser[] = [];
     private _client: Client;
     private _id: string;
 	private _secret: string;
@@ -31,10 +34,10 @@ export class AuthManager {
 	 * Start an auth process to let user connect via 42 account
 	 * @param  {string} callback_url URL where the callback will be sent
      * @param  {string[]} scopes Requested scopes for the user
-	 * @param  {{port: number, redirect_url?: string}} server If set, an automatic auth server will be created
+	 * @param  {{port: number, redirect_url?: string, callback_function?: (arg0: LoggedUser) => void}} server If set, an automatic auth server will be created
 	 * @returns The promise to the AuthProcess object associated or null if an error occured
 	 */
-	async init_auth_process(callback_url: string, scopes?: string[], server?: {port: number, redirect_url?: string}): Promise<AuthProcess | null> {
+	async init_auth_process(callback_url: string, scopes?: string[], server?: {port: number, redirect_url?: string, callback_function?: (arg0: LoggedUser) => void}): Promise<AuthProcess | null> {
 		if(scopes && !scopes?.includes("public"))
             scopes.push("public");
         const params = {
@@ -66,7 +69,7 @@ export class AuthManager {
 	 * @param  {number} process_id The id of the AuthProcess object
      * @param  {string} code The returned code by 42
 	 */
-	async response_auth_process(process_id: number, code: string) {
+	async response_auth_process(process_id: number, code: string): Promise<LoggedUser | null> {
 		const process = this._auth_processes.find((p) => p.id === process_id);
 		if (process === undefined) throw "Invalid process id";
         const params = {
@@ -76,8 +79,26 @@ export class AuthManager {
             code: code,
             redirect_uri: process.callback_url,
         }
-        const response = await this._client.post("oauth/token", params);
-        console.log(response);
+        const response: any = await this._client.post("oauth/token", params);
+        const config = {
+            headers: {
+                Authorization: "Bearer " + response?.access_token,
+            },
+        };
+        try {
+            const ret = await axios.get(Client.uri + "/me", config)
+            const logged_user = new LoggedUser(this._client, ret.data, response?.refresh_token, response?.access_token);
+            this._logged_users.push(logged_user);
+            console.log(`User ${logged_user.login} finished auth process`);
+            return logged_user;
+        } catch (err: any) {
+            console.error(
+                err.response.status,
+                err.response.statusText,
+                err.response.data
+            );
+            return null;
+        }
 	}
 
     /**
