@@ -9,6 +9,7 @@ import { EventsUsersManager } from "../managers/EventsUsersManager";
 import { CursusManager } from "../managers/CursusManager";
 import { ProjectManager } from "../managers/ProjectManager";
 import { ScaleTeamsManager } from "../managers/ScaleTeamsManager";
+import { AuthManager } from "../auth/auth_manager";
 
 const limiter = new Bottleneck({
 	maxConcurrent: 2,
@@ -19,6 +20,7 @@ export class Client {
 	private _id: string;
 	private _secret: string;
 	private _token: null | string = null;
+	private _auth_manager: AuthManager;
 	static uri: string = "https://api.intra.42.fr/v2/";
 
 	users = new UsersManager(this);
@@ -32,6 +34,7 @@ export class Client {
 	constructor(id: string, secret: string) {
 		this._id = id;
 		this._secret = secret;
+		this._auth_manager = new AuthManager(this, this._id, this._secret);
 	}
 
 	private async _getToken(): Promise<string | null> {
@@ -53,7 +56,7 @@ export class Client {
 
 		try {
 			const res = await axios.request(reqOptions);
-			console.log("New token!");
+			console.log("New token generated for the client!");
 			return <string>res.data.access_token;
 		} catch (err: any) {
 			console.error(
@@ -63,14 +66,14 @@ export class Client {
 			);
 		}
 		return null;
-	}
+	}		
 
-	async get(path: string): Promise<AxiosResponse<any, any> | null> {
-		if (this._token === null) this._token = await this._getToken();
+	async get(path: string, token?: string): Promise<AxiosResponse<any, any> | null> {
+		if (!token && this._token === null) this._token = await this._getToken();
 		for (let stop = 2; stop !== 0; stop--) {
 			const config = {
 				headers: {
-					Authorization: "Bearer " + this._token,
+					Authorization: "Bearer " + token || this._token || "",
 				},
 			};
 			try {
@@ -84,13 +87,15 @@ export class Client {
 					err.response.statusText,
 					err.response.data
 				);
+				if(token)
+					return null;
 				this._token = await this._getToken();
 			}
 		}
 		return null;
 	}
 
-	async fetch(path: string, limit: number = 0): Promise<Object[]> {
+	async fetch(path: string, limit: number = 0, token?: string): Promise<Object[]> {
 		const pages: Object[] | null = [];
 		let page: Object[] = [];
 		let res: AxiosResponse<any, any> | null;
@@ -100,7 +105,7 @@ export class Client {
 		try {
 			for (let i = 1; page?.length || i === 1; i++) {
 				pages.push(...page);
-				res = await this.get(path + `&page[size]=${size}&page[number]=` + i);
+				res = await this.get(path + `&page[size]=${size}&page[number]=` + i, token);
 				if (res === null) throw "Error in Client.fetch";
 				page = res.data;
 				const total: number = limit || Number(res.headers["x-total"]);
@@ -115,5 +120,39 @@ export class Client {
 		}
 		bar.end();
 		return pages;
+	}
+
+	async post(path: string, body: any, token?: string): Promise<AxiosResponse<any, any> | null> {
+		if (!token && this._token === null) this._token = await this._getToken();
+		for (let stop = 2; stop !== 0; stop--) {
+			const headers = {
+				Authorization: "Bearer " + token || this._token || "",
+			};
+			const data = querystring.stringify(body);
+			const reqOptions = {
+				url: Client.uri + path,
+				method: "POST",
+				headers: headers,
+				data: data,
+			};
+	
+			try {
+				const ret = await axios.request(reqOptions);
+				return ret.data;
+			} catch (err: any) {
+				console.error(
+					err.response.status,
+					err.response.statusText,
+					err.response.data
+				);
+				if(token)
+					return null;
+			}
+		}
+		return null;
+	}
+
+	get auth_manager(): AuthManager {
+		return this._auth_manager;
 	}
 }
