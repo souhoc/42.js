@@ -82,13 +82,13 @@ export class Client {
 				);
 				return res;
 			} catch (err: any) {
-				if(token)
-					throw(err)
 				console.error(
 					err.response.status,
 					err.response.statusText,
 					err.response.data
 				);
+				if(token)
+					return null;
 				this._token = await this._getToken();
 			}
 		}
@@ -140,13 +140,13 @@ export class Client {
 				const ret = await axios.request(reqOptions);
 				return ret.data;
 			} catch (err: any) {
-				if(token)
-					throw(err)
 				console.error(
 					err.response.status,
 					err.response.statusText,
 					err.response.data
 				);
+				if(token)
+					return null;
 			}
 		}
 		return null;
