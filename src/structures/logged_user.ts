@@ -51,6 +51,10 @@ export class LoggedUser extends User{
         return this.client.fetch(path, limit, await this._getToken() || "");
     }
 
+    async post(path: string, data: any): Promise<AxiosResponse<any, any> | null> {
+        return this.client.post(path, data, await this._getToken() || "");
+    }
+
     async get_corrector_slots(): Promise<CorrectionSlot[]> {
         const res = await this.fetch("/me/slots?filter[future]=true");
         const objs: CorrectionSlot[] = res.map((slot: any) => new CorrectionSlot(slot));
@@ -60,5 +64,14 @@ export class LoggedUser extends User{
         const res = await this.fetch("/me/slots?filter[future]=true");
         const objs: CorrectionSlot[] = res.map((slot: any) => new CorrectionSlot(slot));
         return objs.filter((slot) => !slot.user || slot.user.id != this.id);
+    }
+    async post_slot(begin_at: Date, end_at: Date): Promise<CorrectionSlot[]> {
+        const params = {
+            "slot[user_id]": this.id,
+            "slot[begin_at]": begin_at.toISOString(),
+            "slot[end_at]": end_at.toISOString()
+        };
+        const res: any = await this.post("/slots", params);
+        return res?.map((slot: any) => new CorrectionSlot(slot));
     }
 }
