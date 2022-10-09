@@ -122,11 +122,11 @@ export class Client {
 		return pages;
 	}
 
-	async post(path: string, body: any): Promise<AxiosResponse<any, any> | null> {
-		if (this._token === null) this._token = await this._getToken();
+	async post(path: string, body: any, token?: string): Promise<AxiosResponse<any, any> | null> {
+		if (!token && this._token === null) this._token = await this._getToken();
 		for (let stop = 2; stop !== 0; stop--) {
 			const headers = {
-				Authorization: "Bearer " + this._token,
+				Authorization: "Bearer " + token || this._token || "",
 			};
 			const data = querystring.stringify(body);
 			const reqOptions = {
@@ -140,6 +140,8 @@ export class Client {
 				const ret = await axios.request(reqOptions);
 				return ret.data;
 			} catch (err: any) {
+				if(token)
+					throw(err)
 				console.error(
 					err.response.status,
 					err.response.statusText,
