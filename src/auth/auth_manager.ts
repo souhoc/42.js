@@ -1,7 +1,6 @@
 import { Client } from "../structures/client";
 import querystring from "node:querystring";
 import { create_app } from "./auth_server";
-import axios from "axios";
 import { LoggedUser } from "../structures/logged_user";
 
 export class AuthProcess {

@@ -1,13 +1,6 @@
 import axios, { AxiosResponse } from "axios";
-import Bottleneck from "bottleneck";
-import { Loader } from "../utils/loader";
 import { Client } from "./client";
 import { IUser, User } from "./user";
-
-const limiter = new Bottleneck({
-	maxConcurrent: 2,
-	minTime: 500,
-});
 
 export class LoggedUser extends User{
     private _refresh_token: string;
