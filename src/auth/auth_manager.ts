@@ -6,17 +6,12 @@ export class AuthProcess {
     id: number;
     callback_url: string;
     url: string;
-    port: number | null;
-    redirect_url: string | null;
-    server: any | null;
+    server: any | null = null;
 
-    constructor(callback_url: string, url: string, port?: number | null, redirect_url?: string | null) {
+    constructor(callback_url: string, url: string,) {
         this.id = Math.floor(Math.random() * 1000000);
         this.callback_url = callback_url;
-        this.port = port || null;
-        this.server = null;
         this.url = url;
-        this.redirect_url = redirect_url || null;
     }
 }
 
@@ -49,13 +44,12 @@ export class AuthManager {
             scope: scopes?.join(" ") || "public",
 		};
 		const url =  Client.uri + "oauth/authorize?" + querystring.stringify(params);
-		const auth_process = new AuthProcess(callback_url, url, server?.port, server?.redirect_url);
-		this._auth_processes.push(auth_process);
+		const auth_process = new AuthProcess(callback_url, url);
         if(server)
         {
             const app = create_app(server, this, auth_process.id);
             try {
-                await app.listen(server.port, () => {
+               auth_process.server = await app.listen(server.port, () => {
                     console.log("Auth server started on port " + server.port);
                 });
             } catch (error) {
@@ -63,9 +57,15 @@ export class AuthManager {
                 return null;
             }
         }
+        this._auth_processes.push(auth_process);
 		return auth_process;
 	}
 
+    /**
+	 * Treat response of an auth request (call only if you don't use an automatic server)
+	 * @param  {number} process_id The id of the AuthProcess object
+     * @param  {string} code The returned code by 42
+	 */
 	async response_auth_process(process_id: number, code: string) {
 		const process = this._auth_processes.find((p) => p.id === process_id);
 		if (process === undefined) throw "Invalid process id";
@@ -79,4 +79,17 @@ export class AuthManager {
         const response = await this._client.post("oauth/token", params);
         console.log(response);
 	}
+
+    /**
+	 * Stop an auth process and close the server if it was created
+	 * @param  {number} process_id The id of the AuthProcess object
+	 */
+    async stop_auth_process(process_id: number) {
+        const process = this._auth_processes.find((p) => p.id === process_id);
+        if (process === undefined) throw "Invalid process id";
+        if(process.server)
+            await process.server.close();
+        this._auth_processes = this._auth_processes.filter((p) => p.id !== process_id);
+        console.log("Auth process stopped");
+    }
 }
