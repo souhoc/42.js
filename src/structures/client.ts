@@ -152,6 +152,34 @@ export class Client {
 		return null;
 	}
 
+	async delete(path: string, token?: string): Promise<AxiosResponse<any, any> | null> {
+		if (!token && this._token === null) this._token = await this._getToken();
+		for (let stop = 2; stop !== 0; stop--) {
+			const config = {
+				headers: {
+					Authorization: "Bearer " + token || this._token || "",
+				},
+			};
+			try {
+				const res = await limiter.schedule(() =>
+					axios.delete(Client.uri + path, config)
+				);
+				return res;
+			} catch (err: any) {
+				console.error(
+					err.response.status,
+					err.response.statusText,
+					err.response.data
+				);
+				if(token)
+					return null;
+				this._token = await this._getToken();
+			}
+		}
+		return null;
+	}
+
+
 	get auth_manager(): AuthManager {
 		return this._auth_manager;
 	}

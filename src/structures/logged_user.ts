@@ -55,6 +55,10 @@ export class LoggedUser extends User{
         return this.client.post(path, data, await this._getToken() || "");
     }
 
+    async delete(path: string): Promise<AxiosResponse<any, any> | null> {
+        return this.client.delete(path, await this._getToken() || "");
+    }
+
     async get_corrector_slots(): Promise<CorrectionSlot[]> {
         const res = await this.fetch("/me/slots?filter[future]=true");
         const objs: CorrectionSlot[] = res.map((slot: any) => new CorrectionSlot(slot));
@@ -73,5 +77,17 @@ export class LoggedUser extends User{
         };
         const res: any = await this.post("/slots", params);
         return res?.map((slot: any) => new CorrectionSlot(slot));
+    }
+    async delete_slot(slot: CorrectionSlot | number): Promise<boolean> {
+        if(typeof slot == "number")
+        {
+            const res = await this.delete(`/slots/${slot}`);
+            return res?.status == 204;
+        }
+        else
+        {
+            const res = await this.delete(`/slots/${slot.id}`);
+            return res?.status == 204;
+        }
     }
 }
