@@ -70,10 +70,11 @@ export class Client {
 
 	async get(path: string, token?: string): Promise<AxiosResponse<any, any> | null> {
 		if (!token && this._token === null) this._token = await this._getToken();
+		const choosed = token == undefined ? this._token : token;
 		for (let stop = 2; stop !== 0; stop--) {
 			const config = {
 				headers: {
-					Authorization: "Bearer " + token || this._token || "",
+					Authorization: "Bearer " + choosed || "",
 				},
 			};
 			try {
@@ -124,9 +125,10 @@ export class Client {
 
 	async post(path: string, body: any, token?: string): Promise<AxiosResponse<any, any> | null> {
 		if (!token && this._token === null) this._token = await this._getToken();
+		const choosed = token == undefined ? this._token : token;
 		for (let stop = 2; stop !== 0; stop--) {
 			const headers = {
-				Authorization: "Bearer " + token || this._token || "",
+				Authorization: "Bearer " + choosed || "",
 			};
 			const data = querystring.stringify(body);
 			const reqOptions = {
@@ -154,10 +156,11 @@ export class Client {
 
 	async delete(path: string, token?: string): Promise<AxiosResponse<any, any> | null> {
 		if (!token && this._token === null) this._token = await this._getToken();
+		const choosed = token == undefined ? this._token : token;
 		for (let stop = 2; stop !== 0; stop--) {
 			const config = {
 				headers: {
-					Authorization: "Bearer " + token || this._token || "",
+					Authorization: "Bearer " + choosed || "",
 				},
 			};
 			try {
