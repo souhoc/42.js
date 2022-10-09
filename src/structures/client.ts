@@ -9,7 +9,7 @@ import { EventsUsersManager } from "../managers/EventsUsersManager";
 import { CursusManager } from "../managers/CursusManager";
 import { ProjectManager } from "../managers/ProjectManager";
 import { ScaleTeamsManager } from "../managers/ScaleTeamsManager";
-import { AuthProcess } from "../auth/auth_manager";
+import { AuthManager } from "../auth/auth_manager";
 
 const limiter = new Bottleneck({
 	maxConcurrent: 2,
@@ -20,7 +20,7 @@ export class Client {
 	private _id: string;
 	private _secret: string;
 	private _token: null | string = null;
-	private _auth_processes: AuthProcess[] = [];
+	private _auth_manager: AuthManager;
 	static uri: string = "https://api.intra.42.fr/v2/";
 
 	users = new UsersManager(this);
@@ -34,6 +34,7 @@ export class Client {
 	constructor(id: string, secret: string) {
 		this._id = id;
 		this._secret = secret;
+		this._auth_manager = new AuthManager(this, this._id, this._secret);
 	}
 
 	private async _getToken(): Promise<string | null> {
@@ -119,26 +120,7 @@ export class Client {
 		return pages;
 	}
 
-	/**
-	 * Start an auth process to let user connect via 42 account
-	 * @param  {string} callback_url URL where the callback will be sent
-	 * @param  {number} port If set, the server will be started on this port
-	 * @returns The AuthProcess object associated
-	 */
-	init_auth_process(callback_url: string, port?: number): AuthProcess {
-		const params = {
-			client_id: this._id,
-			redirect_uri: callback_url,
-			response_type: "code",
-		};
-		const url =  Client.uri + "oauth/authorize?" + querystring.stringify(params);
-		const auth_process = new AuthProcess(callback_url, url, port);
-		this._auth_processes.push(auth_process);
-		return auth_process;
-	}
-
-	async response_auth_process(process_id: number, code: string) {
-		const process = this._auth_processes.find((p) => p.id === process_id);
-		if (process === undefined) throw "Invalid process id";
+	get auth_manager(): AuthManager {
+		return this._auth_manager;
 	}
 }
