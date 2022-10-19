@@ -19,6 +19,12 @@
 		"transcendence"
 	],
 	"author": "shocquen",
+	"contributors": [
+		{
+			"name": "Dhubleur",
+			"url": "https://github.com/dams333"
+		}
+	],
 	"license": "ISC",
 	"dependencies": {
 		"@types/axios": "^0.14.0",
