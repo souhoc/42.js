@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { Client } from "./client";
 import { CorrectionSlot } from "./correction_slot";
+import { Project } from "./project";
 import { IUser, User } from "./user";
 
 export class LoggedUser extends User{
@@ -89,5 +90,12 @@ export class LoggedUser extends User{
             const res = await this.delete(`/slots/${slot.id}`);
             return res?.status == 204;
         }
+    }
+
+    async get_slots_for_project(project: Project | number): Promise<CorrectionSlot[]> {
+        const id = typeof project == "number" ? project : project.id;
+        const res = await this.fetch(`/projects/${id}/slots?filter[future]=true`);
+        const objs: CorrectionSlot[] = res.map((slot: any) => new CorrectionSlot(slot));
+        return objs;
     }
 }
