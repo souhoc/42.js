@@ -13,8 +13,15 @@ export interface IUser {
 	usual_first_name?: string;
 	url: string;
 	displayname: string;
-	image_url: string;
-	new_image_url: string;
+	image: {
+		link: string;
+		version: {
+			large: string;
+			medium: string;
+			small: string;
+			micro: string;
+		};
+	};
 	"staff?": boolean;
 	correction_point: number;
 	pool_month: string;
@@ -53,8 +60,15 @@ export class User extends BaseManager {
 	usual_first_name?: string;
 	url: string;
 	displayname: string;
-	image_url: string;
-	new_image_url: string;
+	image: {
+		link: string;
+		version: {
+			large: string;
+			medium: string;
+			small: string;
+			micro: string;
+		};
+	};
 	"staff?": boolean;
 	correction_point: number;
 	pool_month: string;
@@ -92,8 +106,7 @@ export class User extends BaseManager {
 		this.usual_full_name = data.usual_full_name;
 		this.url = data.url;
 		this.displayname = data.displayname;
-		this.image_url = data.image_url;
-		this.new_image_url = data.new_image_url;
+		this.image = data.image;
 		this["staff?"] = data["staff?"];
 		this.correction_point = data.correction_point;
 		this.pool_month = data.pool_month;
