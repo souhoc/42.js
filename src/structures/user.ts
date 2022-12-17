@@ -23,6 +23,7 @@ export interface IUser {
 		};
 	};
 	"staff?": boolean;
+	"active?": boolean;
 	correction_point: number;
 	pool_month: string;
 	pool_year: string;
@@ -70,6 +71,7 @@ export class User extends BaseManager {
 		};
 	};
 	"staff?": boolean;
+	"active?": boolean;
 	correction_point: number;
 	pool_month: string;
 	pool_year: string;
@@ -108,6 +110,7 @@ export class User extends BaseManager {
 		this.displayname = data.displayname;
 		this.image = data.image;
 		this["staff?"] = data["staff?"];
+		this["active?"] = data["active?"];
 		this.correction_point = data.correction_point;
 		this.pool_month = data.pool_month;
 		this.pool_year = data.pool_year;
