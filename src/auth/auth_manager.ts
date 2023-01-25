@@ -92,6 +92,7 @@ export class AuthManager {
 			redirect_uri: process.callback_url,
 		};
 		const response: any = await this._client.post("oauth/token", params);
+		if (!response) return null;
 		try {
 			const ret = await this._client.get("/me", response?.access_token);
 			const logged_user = new LoggedUser(

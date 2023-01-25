@@ -95,6 +95,9 @@ export class Client {
 				);
 				return res;
 			} catch (err: any) {
+				if (err.response.status === 401) {
+					return null;
+				}
 				console.error(
 					err.response.status,
 					err.response.statusText,
@@ -166,6 +169,9 @@ export class Client {
 				const ret = await axios.request(reqOptions);
 				return ret.data;
 			} catch (err: any) {
+				if (err.response.status === 401) {
+					return null;
+				}
 				console.error(
 					err.response.status,
 					err.response.statusText,
