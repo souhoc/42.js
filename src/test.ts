@@ -1,7 +1,10 @@
 import "dotenv/config";
-import { Client } from "./index";
+import { Client, User } from "./index";
 
+const isPisciner = (user: User) =>
+  user.pool_month === "august" && user.pool_year === "2023";
 (async () => {
+<<<<<<< HEAD
 	const client = new Client(
 		<string>process.env.ID,
 		<string>process.env.SECRET
@@ -20,4 +23,20 @@ import { Client } from "./index";
 		}
 	);
 	if (auth_process) console.log(auth_process.url);
+=======
+  const client = new Client(
+    <string> process.env.ID,
+    <string> process.env.SECRET,
+  );
+
+  const eventUsers = await client.events_users.fetch(18260);
+  const pisciners = eventUsers.filter((eu) => isPisciner(eu.user));
+  console.log(`
+    total: ${eventUsers.length}
+    Pisciners: ${pisciners.length}
+    Studs: ${eventUsers.length - pisciners.length}
+    `);
+  const studs = eventUsers.filter((eu) => !isPisciner(eu.user));
+  console.log(studs.map((s) => s.user.login).join("\n"));
+>>>>>>> b7672a5 (get studs and pisciners from an event)
 })();
